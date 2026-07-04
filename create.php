@@ -6,50 +6,135 @@ if(!isset($_SESSION['user'])){
     exit();
 }
 
+$message = "";
+
 if(isset($_POST['submit'])){
 
-    $title = mysqli_real_escape_string($conn,$_POST['title']);
-    $content = mysqli_real_escape_string($conn,$_POST['content']);
+    $title = trim($_POST['title']);
+    $content = trim($_POST['content']);
 
-    mysqli_query($conn,
-    "INSERT INTO posts(title,content)
-    VALUES('$title','$content')");
+    if($title == "" || $content == ""){
 
-    header("Location: index.php");
+        $message = "<div class='alert alert-danger'>All fields are required.</div>";
+
+    }else{
+
+        $title = mysqli_real_escape_string($conn,$title);
+        $content = mysqli_real_escape_string($conn,$content);
+
+        mysqli_query($conn,
+        "INSERT INTO posts(title,content)
+        VALUES('$title','$content')");
+
+        $message = "<div class='alert alert-success'>
+        Post Added Successfully.
+        </div>";
+    }
 }
 ?>
 
 <!DOCTYPE html>
 <html>
-<head>
-<title>Create Post</title>
-</head>
-<body>
 
-<h2>Create New Post</h2>
+<head>
+
+<title>Create Post</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+</head>
+
+<body class="bg-light">
+
+<nav class="navbar navbar-dark bg-dark">
+
+<div class="container">
+
+<a class="navbar-brand" href="dashboard.php">
+
+Blog Management System
+
+</a>
+
+</div>
+
+</nav>
+
+<div class="container mt-5">
+
+<div class="card shadow">
+
+<div class="card-header bg-success text-white">
+
+<h3>Create New Post</h3>
+
+</div>
+
+<div class="card-body">
+
+<?php echo $message; ?>
 
 <form method="POST">
 
-<input type="text"
-       name="title"
-       placeholder="Post Title"
-       required>
+<div class="mb-3">
 
-<br><br>
+<label class="form-label">
 
-<textarea name="content"
-          rows="6"
-          cols="40"
-          placeholder="Post Content"
-          required></textarea>
+Post Title
 
-<br><br>
+</label>
 
-<button name="submit">
+<input
+type="text"
+name="title"
+class="form-control"
+placeholder="Enter Post Title"
+required>
+
+</div>
+
+<div class="mb-3">
+
+<label class="form-label">
+
+Post Content
+
+</label>
+
+<textarea
+name="content"
+rows="6"
+class="form-control"
+placeholder="Write your post here..."
+required></textarea>
+
+</div>
+
+<button
+type="submit"
+name="submit"
+class="btn btn-success">
+
 Add Post
+
 </button>
+
+<a
+href="dashboard.php"
+class="btn btn-secondary">
+
+Back
+
+</a>
 
 </form>
 
+</div>
+
+</div>
+
+</div>
+
 </body>
+
 </html>

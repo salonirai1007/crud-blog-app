@@ -5,71 +5,128 @@ $message = "";
 
 if(isset($_POST['login'])){
 
-    $username = $_POST['username'];
-    $password = $_POST['password'];
+    $username = trim($_POST['username']);
+    $password = trim($_POST['password']);
 
-    $sql = mysqli_query($conn,
-    "SELECT * FROM users WHERE username='$username'");
+    $sql = mysqli_query($conn,"SELECT * FROM users WHERE username='$username'");
 
-    if(mysqli_num_rows($sql) > 0){
+    if(mysqli_num_rows($sql)>0){
 
         $user = mysqli_fetch_assoc($sql);
 
-        if(password_verify($password, $user['password'])){
+        if(password_verify($password,$user['password'])){
 
-            $_SESSION['user'] = $username;
+            $_SESSION['user']=$username;
 
             header("Location: dashboard.php");
             exit();
 
-        } else {
+        }else{
 
-            $message = "Incorrect Password";
+            $message="<div class='alert alert-danger'>
+            Incorrect Password
+            </div>";
+
         }
 
-    } else {
+    }else{
 
-        $message = "User Not Found";
+        $message="<div class='alert alert-danger'>
+        User Not Found
+        </div>";
+
     }
+
 }
 ?>
 
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Login</title>
+
+<title>Login</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
-<body>
 
-<h2>User Login</h2>
+<body class="bg-light">
 
-<p><?php echo $message; ?></p>
+<div class="container mt-5">
+
+<div class="row justify-content-center">
+
+<div class="col-md-5">
+
+<div class="card shadow">
+
+<div class="card-header bg-primary text-white">
+
+<h3>User Login</h3>
+
+</div>
+
+<div class="card-body">
+
+<?php echo $message; ?>
 
 <form method="POST">
 
-    <input type="text"
-           name="username"
-           placeholder="Username"
-           required>
+<div class="mb-3">
 
-    <br><br>
+<label>Username</label>
 
-    <input type="password"
-           name="password"
-           placeholder="Password"
-           required>
+<input
+type="text"
+name="username"
+class="form-control"
+required>
 
-    <br><br>
+</div>
 
-    <button type="submit" name="login">
-        Login
-    </button>
+<div class="mb-3">
+
+<label>Password</label>
+
+<input
+type="password"
+name="password"
+class="form-control"
+required>
+
+</div>
+
+<button
+name="login"
+class="btn btn-primary w-100">
+
+Login
+
+</button>
 
 </form>
 
-<br>
+<hr>
 
-<a href="register.php">Create Account</a>
+<a
+href="register.php"
+class="btn btn-success w-100">
+
+Create New Account
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
 
 </body>
+
 </html>

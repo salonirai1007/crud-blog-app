@@ -1,67 +1,138 @@
 <?php
 include 'config.php';
 
-$message = "";
+$message="";
 
 if(isset($_POST['register'])){
 
-    $username = mysqli_real_escape_string($conn, $_POST['username']);
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $username=trim($_POST['username']);
+    $password=trim($_POST['password']);
 
-    $check = mysqli_query($conn,
-    "SELECT * FROM users WHERE username='$username'");
+    if($username=="" || $password==""){
 
-    if(mysqli_num_rows($check) > 0){
+        $message="<div class='alert alert-danger'>
+        All fields are required.
+        </div>";
 
-        $message = "Username already exists!";
+    }else{
 
-    } else {
+        $password=password_hash($password,PASSWORD_DEFAULT);
 
-        mysqli_query($conn,
-        "INSERT INTO users(username,password)
-        VALUES('$username','$password')");
+        $check=mysqli_query($conn,
+        "SELECT * FROM users WHERE username='$username'");
 
-        $message = "Registration Successful!";
+        if(mysqli_num_rows($check)>0){
+
+            $message="<div class='alert alert-warning'>
+            Username already exists.
+            </div>";
+
+        }else{
+
+            mysqli_query($conn,
+
+            "INSERT INTO users(username,password)
+
+            VALUES('$username','$password')");
+
+            $message="<div class='alert alert-success'>
+            Registration Successful.
+            </div>";
+
+        }
+
     }
+
 }
 ?>
 
 <!DOCTYPE html>
 <html>
+
 <head>
-    <title>Register</title>
+
+<title>Register</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
 </head>
-<body>
 
-<h2>User Registration</h2>
+<body class="bg-light">
 
-<p><?php echo $message; ?></p>
+<div class="container mt-5">
+
+<div class="row justify-content-center">
+
+<div class="col-md-5">
+
+<div class="card shadow">
+
+<div class="card-header bg-success text-white">
+
+<h3>User Registration</h3>
+
+</div>
+
+<div class="card-body">
+
+<?php echo $message; ?>
 
 <form method="POST">
 
-    <input type="text"
-           name="username"
-           placeholder="Username"
-           required>
+<div class="mb-3">
 
-    <br><br>
+<label>Username</label>
 
-    <input type="password"
-           name="password"
-           placeholder="Password"
-           required>
+<input
+type="text"
+name="username"
+class="form-control"
+required>
 
-    <br><br>
+</div>
 
-    <button type="submit" name="register">
-        Register
-    </button>
+<div class="mb-3">
+
+<label>Password</label>
+
+<input
+type="password"
+name="password"
+class="form-control"
+required>
+
+</div>
+
+<button
+name="register"
+class="btn btn-success w-100">
+
+Register
+
+</button>
 
 </form>
 
-<br>
+<hr>
 
-<a href="login.php">Already have an account? Login</a>
+<a
+href="login.php"
+class="btn btn-primary w-100">
+
+Already Have an Account
+
+</a>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
 
 </body>
+
 </html>
